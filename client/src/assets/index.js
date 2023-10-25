@@ -11,6 +11,7 @@ import iconUrlMenu from './menu.svg';
 import iconUrlMoney from './money.svg';
 import iconUrlLoader from './loader.svg';
 import iconUrlThirdweb from './thirdweb.png';
+import imgUrlSampleCampaign from './sample-campaign.png';
 
 export {
   tagType,
@@ -26,4 +27,5 @@ export {
   iconUrlMoney,
   iconUrlLoader,
   iconUrlThirdweb,
+  imgUrlSampleCampaign,
 };
