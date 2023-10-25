@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { SideBar, NavBar } from "./components";
-// import ExplorePage from "./pages/ExplorePage"; <ExplorePage />
+import CampaignExplorePage from "./pages/campaigns/CampaignExplorePage";
 import routeLinks from "./routes";
 
 const RootLayout = () => {
@@ -11,7 +11,7 @@ const RootLayout = () => {
         <Routes>
           <Route
             path={routeLinks.explore.path}
-            element={<div>Explore</div>}
+            element={<CampaignExplorePage />}
           />
           <Route
             path={routeLinks.campaigns.path}
