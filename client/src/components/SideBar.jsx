@@ -29,43 +29,38 @@ const SideBarIcon = ({
 const SideBar = () => {
   const navigate = useNavigate();
   const [activeLink, setActiveLink] = useState(routeLinks.explore.name);
-  const navLinks = [ // NOTE: this is the order of the icons in the sidebar
+  const navLinks = [
+    // NOTE: this is the order of the icons in the sidebar
     routeLinks.explore,
     routeLinks.campaigns,
-    routeLinks.payments,
     routeLinks.profile,
   ];
   return (
     <div className="flex justify-between items-center flex-col sticky top-5 h-[93vh]">
       <Link to={routeLinks.explore.path}>
-        <SideBarIcon styles="w-[52px] h-[52px] bg-[#2c2f32]" isActive={true} imgUrl={iconUrlCrowdBaseLogo} />
+        <SideBarIcon
+          styles="w-[52px] h-[52px] bg-[#2c2f32]"
+          isActive={true}
+          imgUrl={iconUrlCrowdBaseLogo}
+        />
       </Link>
       <div className="flex-1 flex flex-col justify-between items-center bg-[#1c1c24] rounded-[20px] w-[76px] py-4 mt-12">
         <div className="flex flex-col justify-center items-center gap-3">
           {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              onClick={() => setActiveLink(link.name)}
-            >
-              <SideBarIcon
-                imgUrl={link.imgUrl}
-                isActive={activeLink === link.name}
-                handleClick={() => {
-                  setActiveLink(link.name);
-                  if (link.name === routeLinks.logout.name) {
-                    localStorage.removeItem("token");
-                    navigate(routeLinks.explore.path);
-                  }
-                }}
-              />
-            </Link>
+            <SideBarIcon
+              imgUrl={link.imgUrl}
+              isActive={activeLink === link.name}
+              handleClick={() => {
+                setActiveLink(link.name);
+                navigate(link.path);
+              }}
+            />
           ))}
         </div>
-        <SideBarIcon styles="bg-[#1c1c24]" imgUrl={iconUrlSun}/>
+        <SideBarIcon styles="bg-[#1c1c24]" imgUrl={iconUrlSun} />
       </div>
     </div>
   );
-}
+};
 
 export default SideBar;

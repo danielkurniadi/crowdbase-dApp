@@ -9,11 +9,16 @@ import {
 } from "./assets";
 
 const routePaths = {
-  explore: "/", // explore crowdfunding ideas
-  campaigns: "/campaigns", // manage campaign
-  payments: "/payments", // manage payments
-  profile: "/profile", // manage profile
-  logout: "/logout", // logout
+  // explore crowdfunding ideas
+  explore: "/",
+  // manage campaign
+  campaigns: "/campaigns",
+  // manage payments
+  payments: "/payments",
+  // manage profile
+  profile: "/profile",
+  // logout
+  logout: "/logout",
 };
 
 // TODO: tsx: Define type
@@ -31,17 +36,17 @@ const routeLinks = {
   payments: {
     name: "payment",
     imgUrl: iconUrlPayment,
-    link: routePaths.payments,
+    path: routePaths.payments,
   },
   profile: {
     name: "profile",
     imgUrl: iconUrlProfile,
-    link: "/profile",
+    path: routePaths.profile,
   },
   logout: {
     name: "logout",
     imgUrl: iconUrlLogout,
-    link: "/logout",
+    path: routePaths.logout,
   },
 };
 
