@@ -1,21 +1,29 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { SideBar, NavBar } from "./components";
+
 import CampaignExplorePage from "./pages/campaigns/CampaignExplorePage";
+import CampaignViewPage from "./pages/campaigns/CampaignViewPage";
+import CampaignCreatePage from "./pages/campaigns/CampaignCreatePage";
+
 import routeLinks from "./routes";
 
 const RootLayout = () => {
   return (
-    <div className="flex w-full gap-8">
-      <div className="flex-1 p-4">
+    <div className="flex w-4/5 gap-8">
+      <div className="flex-1 p-4 justify-between">
         <Routes>
           <Route
             path={routeLinks.explore.path}
             element={<CampaignExplorePage />}
           />
           <Route
-            path={routeLinks.campaigns.path}
-            element={<div>Main Campaigns</div>}
+            path={routeLinks.createCampaigns.path}
+            element={<CampaignCreatePage />}
+          />
+          <Route
+            path={routeLinks.viewCampaign.path}
+            element={<CampaignViewPage />}
           />
           <Route
             path={routeLinks.profile.path}
@@ -23,8 +31,7 @@ const RootLayout = () => {
           />
         </Routes>
       </div>
-      <div className="w-1/5 border border-pink-500 p-4">
-      </div>
+      {/* <div className="w-1/5 p-4"></div> */}
     </div>
   );
 };

@@ -11,8 +11,9 @@ import {
 const routePaths = {
   // explore crowdfunding ideas
   explore: "/",
-  // manage campaign
-  campaigns: "/campaigns",
+  // campaign
+  createCampaigns: "/campaigns",
+  viewCampaign: "/campaigns/:id",
   // manage payments
   payments: "/payments",
   // manage profile
@@ -28,10 +29,15 @@ const routeLinks = {
     imgUrl: iconUrlExplore,
     path: routePaths.explore,
   },
-  campaigns: {
+  createCampaigns: {
     name: "campaigns",
     imgUrl: iconUrlCreateCampaign,
-    path: routePaths.campaigns,
+    path: routePaths.createCampaigns,
+  },
+  viewCampaign: {
+    name: "campaign",
+    imgUrl: iconUrlCrowdBaseLogo,
+    path: routePaths.viewCampaign,
   },
   payments: {
     name: "payment",

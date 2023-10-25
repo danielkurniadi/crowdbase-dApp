@@ -32,7 +32,7 @@ const SideBar = () => {
   const navLinks = [
     // NOTE: this is the order of the icons in the sidebar
     routeLinks.explore,
-    routeLinks.campaigns,
+    routeLinks.createCampaigns,
     routeLinks.profile,
   ];
   return (

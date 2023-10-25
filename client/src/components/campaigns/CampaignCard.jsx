@@ -15,13 +15,11 @@ const CampaignStatusBox = ({ boxTitle = "", boxSubtitle = "" }) => {
   );
 };
 
-export const CampaignCard = () => {
+export const CampaignCard = ({ handleClick = () => {} }) => {
   return (
     <div
       className="sm:w-[288px] w-full rounded-[15px] bg-[#1c1c24] cursor-pointer"
-      onClick={()=>{
-        // TODO:
-      }}
+      onClick={handleClick}
     >
       <img
         src={imgUrlSampleCampaign}
@@ -48,7 +46,10 @@ export const CampaignCard = () => {
           </p>
         </div>
         <div className="flex justify-between flex-wrap mt-[15px] gap-2">
-          <CampaignStatusBox boxTitle="19.3 ETH" boxSubtitle="Raised of 80 ETH" />
+          <CampaignStatusBox
+            boxTitle="19.3 ETH"
+            boxSubtitle="Raised of 80 ETH"
+          />
           <CampaignStatusBox boxTitle="80" boxSubtitle="Days Left" />
           <CampaignStatusBox boxTitle="Series C" boxSubtitle="Funding stage" />
         </div>
@@ -61,7 +62,7 @@ export const CampaignCard = () => {
             />
           </div>
           <p className="flex-1 font-epilogue font-normal text-[12px] text-[#808191] truncate">
-            by
+            by &#160;
             <span className="text-[#b2b3bd]">Daniel Kurniadi</span>
           </p>
         </div>
