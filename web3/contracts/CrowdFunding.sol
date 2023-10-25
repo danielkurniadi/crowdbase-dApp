@@ -1,71 +1,103 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-contract CrowdFunding {
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract Crowdfunding is Ownable {
+    enum CampaignStatus { Ongoing, Successful, Failed }
 
     struct Campaign {
-        uint256 id;
         address owner;
         string title;
         string description;
-        string image;
+        string bannerImageUrl;
+        string profileImageUrl;
         uint256 fundingGoal;
-        uint256 fundingRaised;
         uint256 deadline;
-        address[] donators;
-        uint256[] donations;
+        uint256 totalFunds;
+        CampaignStatus status;
+        mapping(address => uint256) donations;
     }
 
+    uint256 public campaignCount;
     mapping(uint256 => Campaign) public campaigns;
-    uint256 public campaignsCount = 0;
 
-    constructor() {}
+    event CampaignCreated(uint256 indexed campaignId, address indexed owner, string title);
+    event DonationReceived(uint256 indexed campaignId, address indexed donor, uint256 amount);
+    event CampaignFinalized(uint256 indexed campaignId, CampaignStatus status);
+
+    modifier onlyCampaignOwner(uint256 campaignId) {
+        require(msg.sender == campaigns[campaignId].owner, "Only the campaign owner can call this function");
+        _;
+    }
 
     function createCampaign(
-        address _owner,
         string memory _title,
         string memory _description,
+        string memory _bannerImageUrl,
+        string memory _profileImageUrl,
         uint256 _fundingGoal,
-        uint256 _deadline,
-        string memory _image
-    ) public returns (uint256) {
-        Campaign storage campaign = campaigns[campaignsCount];
-        require(campaign.deadline < block.timestamp, "The deadline should be a future date.");
+        uint256 _deadline
+    ) external {
+        require(_fundingGoal > 0, "Funding goal must be greater than 0");
+        require(_deadline > block.timestamp, "Deadline must be in the future");
 
-        campaign.owner = _owner;
-        campaign.title = _title;
-        campaign.description = _description;
-        campaign.fundingGoal = _fundingGoal;
-        campaign.fundingRaised = 0;
-        campaign.deadline = _deadline;
-        campaign.image = _image;
+        uint256 campaignId = campaignCount++;
+        Campaign storage newCampaign = campaigns[campaignId];
+        newCampaign.owner = msg.sender;
+        newCampaign.title = _title;
+        newCampaign.description = _description;
+        newCampaign.bannerImageUrl = _bannerImageUrl;
+        newCampaign.profileImageUrl = _profileImageUrl;
+        newCampaign.fundingGoal = _fundingGoal;
+        newCampaign.deadline = _deadline;
+        newCampaign.status = CampaignStatus.Ongoing;
 
-        campaignsCount++;
-        return campaignsCount - 1;
+        emit CampaignCreated(campaignId, msg.sender, _title);
     }
 
-    function donateToCampaign(uint256 _campaignId) public payable{
-        uint256 fund = msg.value;
-        Campaign storage campaign = campaigns[_campaignId];
-        campaign.donators.push(msg.sender);
-        campaign.donations.push(fund);
+    function donate(uint256 campaignId, uint256 amount) external payable {
+        Campaign storage campaign = campaigns[campaignId];
+        require(campaign.status == CampaignStatus.Ongoing, "Campaign is not ongoing");
+        require(msg.value >= amount, "Not enough ether sent");
+        require(block.timestamp < campaign.deadline, "Campaign deadline reached");
+        require(amount > 0, "Donation amount must be greater than 0");
 
-        (bool sent, ) = payable(campaign.owner).call{value: fund}("");
-        if (sent) {
-            campaign.fundingRaised = campaign.fundingRaised + fund;
+        campaign.donations[msg.sender] += amount;
+        campaign.totalFunds += amount;
+
+        emit DonationReceived(campaignId, msg.sender, amount);
+
+        if (campaign.totalFunds >= campaign.fundingGoal) {
+            // Campaign reached its funding goal
+            campaign.status = CampaignStatus.Successful;
         }
     }
 
-    function getDonators(uint256 _campaignId) view public returns (address[] memory, uint256[] memory) {
-        return (campaigns[_campaignId].donators, campaigns[_campaignId].donations);
-    }
+    function finalizeCampaign(uint256 campaignId) external onlyCampaignOwner(campaignId) {
+        Campaign storage campaign = campaigns[campaignId];
+        require(campaign.status == CampaignStatus.Ongoing, "Campaign is not ongoing");
+        require(block.timestamp >= campaign.deadline, "Campaign deadline not reached yet");
 
-    function getCampaigns() view public returns (Campaign[] memory ) {
-        Campaign[] memory allCampaigns = new Campaign[](campaignsCount);
-        for (uint i = 0; i < campaignsCount; i++) {
-            Campaign storage item = campaigns[i];
-            allCampaigns[i] = item;
+        if (campaign.totalFunds >= campaign.fundingGoal) {
+            // Transfer funds to the campaign owner
+            payable(campaign.owner).transfer(campaign.totalFunds);
+            campaign.status = CampaignStatus.Successful;
+        } else {
+            // Refund donations to contributors
+            address contributor;
+            uint256 amount;
+            for (uint256 i = 0; i < campaignCount; i++) {
+                contributor = address(uint160(i));
+                amount = campaign.donations[contributor];
+                if (amount > 0) {
+                    payable(contributor).transfer(amount);
+                }
+            }
+            campaign.status = CampaignStatus.Failed;
         }
-        return allCampaigns;
+
+        emit CampaignFinalized(campaignId, campaign.status);
     }
 }

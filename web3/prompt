@@ -1,0 +1,11 @@
+Smart contract written in solidity for Crowd funding. The Crowdfunding uses all or nothing concept, meaning the campaign owner will only receive the money you've raised you raise if you hit your target by your closing date. We will be testing the smart contract using base goerli test net.
+
+The campaign can be created and when it does, it records the owners wallet address. Then web3.0 users in our application can donate to the campaign a certain amount from the wallet as long as it is sufficient. When the user successfully donate the money, it doesn't directly go to the owners wallet yet.
+
+All the donated amount is held in a central custodian wallet until the campaign successfully gather all the funding goals amount before the deadline date.
+
+When the campaign failed to gather fund equal to the funding goals, it needs to revert and redistribute the money back to the donators, so we also need to record address and donation for each donators in case the campaign failed to achieve target funding goals before the deadline date.
+
+Other than that, the contract might also store campaign data like title (type: string), description (type: string), campaign banner image URL and campaign profile image URL.
+
+Please also implement the unit test for the solidity smart contract.
